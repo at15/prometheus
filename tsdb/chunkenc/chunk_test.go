@@ -89,6 +89,23 @@ func testChunk(c Chunk) error {
 	if !reflect.DeepEqual(exp, res) {
 		return fmt.Errorf("unexpected result\n\ngot: %v\n\nexp: %v", res, exp)
 	}
+
+	// NOTE: the iterator can't read what is already read
+	it2 := c.Iterator(nil)
+	var res2 []pair
+	for it2.Next() {
+		ts, v := it2.At()
+		res = append(res2, pair{
+			t: ts,
+			v: v,
+		})
+	}
+	if it2.Err() != nil {
+		return it2.Err()
+	}
+	if !reflect.DeepEqual(exp, res2) {
+		return fmt.Errorf("unexpected result\n\ngot: %v\n\nexp: %v", res, exp)
+	}
 	return nil
 }
 
